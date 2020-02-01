@@ -1,0 +1,15 @@
+test:
+  image: gitlab-registry.sr-system.de/glide/docker/deployer-php7.2:latest
+  services:
+    - mysql:5.7
+  variables:
+    APP_ENV: test
+    MYSQL_ROOT_PASSWORD: root
+    DATABASE_URL: mysql://root:root@mysql:3306/xml_import_test
+  script:
+    - composer install --no-progress
+    - bin/console doctrine:database:create
+    - bin/console doctrine:schema:update --force
+    - vendor/bin/phpunit
+    - bin/console import data/products.xml
+    - bin/console show-results

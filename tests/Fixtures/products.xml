@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<catalog>
+    <products>
+        <product number="0001">
+            <name>T-Shirt Foobar</name>
+            <variants>
+                <variant>
+                    <variant-code>01</variant-code>
+                    <color>blue</color>
+                    <size>91</size>
+                </variant>
+                <variant>
+                    <variant-code>02</variant-code>
+                    <color>blue</color>
+                    <size>96</size>
+                </variant>
+                <variant>
+                    <variant-code>03</variant-code>
+                    <color>blue</color>
+                    <size>106</size>
+                </variant>
+                <variant>
+                    <variant-code>04</variant-code>
+                    <color>red</color>
+                    <size>93</size>
+                </variant>
+                <variant>
+                    <variant-code>05</variant-code>
+                    <color>red</color>
+                    <size>100</size>
+                </variant>
+                <variant>
+                    <variant-code>06</variant-code>
+                    <color>red</color>
+                    <size>102</size>
+                </variant>
+            </variants>
+        </product>
+        <product number="2000">
+            <name>Pillow</name>
+            <variants>
+                <variant>
+                    <variant-code>01</variant-code>
+                    <color>off-white</color>
+                    <size>-</size>
+                </variant>
+            </variants>
+        </product>
+        <product number="2000">
+            <name/>
+            <variants/>
+        </product>
+        <product number="0002">
+            <name>Button-down Shirt Baz</name>
+            <variants>
+                <variant>
+                    <variant-code>01</variant-code>
+                    <color>blue</color>
+                    <size>36</size>
+                </variant>
+                <variant>
+                    <variant-code>02</variant-code>
+                    <color>blue</color>
+                    <size>40</size>
+                </variant>
+                <variant>
+                    <variant-code>03</variant-code>
+                    <color>blue</color>
+                    <size>42</size>
+                </variant>
+                <variant>
+                    <variant-code>04</variant-code>
+                    <color>red</color>
+                    <size>S</size>
+                </variant>
+                <variant>
+                    <variant-code>05</variant-code>
+                    <color>red</color>
+                    <size>M</size>
+                </variant>
+                <variant>
+                    <variant-code>06</variant-code>
+                    <color>red</color>
+                    <size>L</size>
+                </variant>
+            </variants>
+        </product>
+        <product>
+            <name/>
+            <variants>
+                <variant>
+                    <variant-code>01</variant-code>
+                    <color/>
+                    <size>-</size>
+                </variant>
+            </variants>
+        </product>
+    </products>
+</catalog>
