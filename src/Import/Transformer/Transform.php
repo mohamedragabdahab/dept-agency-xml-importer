@@ -2,52 +2,50 @@
 
 namespace App\Import\Transformer;
 
-class Transform
+class Transform implements Transferable
 {
-    private $productGroups;
     private $products;
+    private $transformedData = [];
 
     public function __construct(array $data)
     {
-        $this->productGroups = $data['product-groups'];
         $this->products = $data['products'];
     }
 
-    public function transform()
+    public function transform(): void
     {
-        $productsData = [];
-
         foreach ($this->products['product'] as $product) {
             $productTransformer = new ProductTransformer();
-            $productTransformer->validate($product);
+            $productTransformer->transform($product);
 
             $productSku = $productTransformer->getSku();
             $productName = $productTransformer->getName();
 
-            $productsData[$productSku]['name'] = $productName;
-            $productsData[$productSku]['group'] = $productTransformer->getGroup();
+            $this->transformedData[$productSku]['name'] = $productName;
+            $this->transformedData[$productSku]['group'] = $productTransformer->getGroup();
 
             $productVariantsTransformer = new ProductVariantsTransformer();
 
             foreach ($product['variants'] as $variants) {
 
                 foreach ($variants as $variant) {
-                    $productVariantsTransformer->validate($variant, $productTransformer);
+                    $productVariantsTransformer->transform($variant, $productTransformer);
 
                     $productVariants = [];
                     $productVariants['sku'] = $productVariantsTransformer->getSku();
                     $productVariants['size'] = $productVariantsTransformer->getSize();
                     $productVariants['name'] = $productVariantsTransformer->getName();
 
-                    $productsData[$productSku]['variants'][$productVariantsTransformer->getColor()][] = $productVariants;
+                    $this->transformedData[$productSku]['variants'][$productVariantsTransformer->getColor()][] = $productVariants;
                 }
-
             }
 
-            $productsData[$productSku]['colors'] = $productVariantsTransformer->getColorCollection();
+            $this->transformedData[$productSku]['colors'] = $productVariantsTransformer->getColorCollection();
         }
-
-        return $productsData;
     }
 
+    public function getTransformedData(): array
+    {
+        return $this->transformedData;
+    }
 }

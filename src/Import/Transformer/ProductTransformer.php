@@ -11,7 +11,7 @@ class ProductTransformer
     private $group;
     private $productVariants;
 
-    public function validate($productData)
+    public function transform($productData): void
     {
         $this->sku = isset($productData['@attributes']['number']) ? $productData['@attributes']['number'] : 'sku';
         $this->name = is_string($productData['name']) ? $productData['name'] : 'name';

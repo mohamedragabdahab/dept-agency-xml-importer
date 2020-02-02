@@ -10,15 +10,16 @@ class ProductVariantsTransformer
     private $color;
     private $colorCollection = [];
 
-    public function validate($variantData, ProductTransformer $product)
+    public function transform($variantData, ProductTransformer $product): void
     {
         $this->sku = isset($variantData['variant-code']) ? $variantData['variant-code'] : 'sku';;
         $this->size = isset($variantData['size']) ? $variantData['size'] : 'size';
         $this->color = isset($variantData['color']) ? $variantData['color'] : 'color';
+        $this->name = sprintf('%s %s %s', $product->getName(), $this->color, $this->size);
+
         if (!in_array($this->color, $this->colorCollection)) {
             $this->colorCollection[] = $this->color;
         }
-        $this->name = sprintf('%s %s %s', $product->getName(), $this->color, $this->size);
     }
 
     public function getSku(): string

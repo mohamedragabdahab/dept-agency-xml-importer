@@ -22,7 +22,8 @@ class ProductImporter implements ProductImporterInterface
     {
         $sizeMapper = new SizeMapper();
         $transform = new Transform($this->buildData($filePath));
-        $data = $transform->transform();
+        $transform->transform();
+        $data = $transform->getTransformedData();
 
         foreach ($data as $sku => $item) {
             foreach ($item['colors'] as $color) {
