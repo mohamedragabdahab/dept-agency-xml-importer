@@ -21,9 +21,8 @@ class ProductImporter implements ProductImporterInterface
     public function import(string $filePath): void
     {
         $sizeMapper = new SizeMapper();
-        $data = $this->buildData($filePath);
-        $transform = new Transform($data);
-        $data = $transform->init();
+        $transform = new Transform($this->buildData($filePath));
+        $data = $transform->transform();
 
         foreach ($data as $sku => $item) {
             foreach ($item['colors'] as $color) {

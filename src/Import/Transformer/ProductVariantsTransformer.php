@@ -2,39 +2,23 @@
 
 namespace App\Import\Transformer;
 
-use App\Entity\Product;
-use App\Import\Mapper\SizeMapper;
-
 class ProductVariantsTransformer
 {
-    private $color;
     private $sku;
+    private $name;
     private $size;
-    private $product;
-    private $sizeMapper;
+    private $color;
+    private $colorCollection = [];
 
-    private $data;
-
-    public function __construct(Product $product, array $data)
+    public function validate($variantData, ProductTransformer $product)
     {
-        $this->sizeMapper = new SizeMapper();
-        $this->data = $data;
-        $this->product = $product;
-
-        $this->transform();
-    }
-
-    private function transform()
-    {
-        $item = $this->data;
-        $this->sku = sprintf('%s-%s', $this->product->getSku(), $item['variant-code']);
-        $this->color = $item['color'];
-        $this->size = $this->sizeMapper->getMappedSize($item['size']);
-    }
-
-    public function getColor(): string
-    {
-        return $this->color;
+        $this->sku = isset($variantData['variant-code']) ? $variantData['variant-code'] : 'sku';;
+        $this->size = isset($variantData['size']) ? $variantData['size'] : 'size';
+        $this->color = isset($variantData['color']) ? $variantData['color'] : 'color';
+        if (!in_array($this->color, $this->colorCollection)) {
+            $this->colorCollection[] = $this->color;
+        }
+        $this->name = sprintf('%s %s %s', $product->getName(), $this->color, $this->size);
     }
 
     public function getSku(): string
@@ -42,8 +26,23 @@ class ProductVariantsTransformer
         return $this->sku;
     }
 
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
     public function getSize(): string
     {
         return $this->size;
+    }
+
+    public function getColor(): string
+    {
+        return $this->color;
+    }
+
+    public function getColorCollection(): array
+    {
+        return $this->colorCollection;
     }
 }

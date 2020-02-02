@@ -13,41 +13,38 @@ class Transform
         $this->products = $data['products'];
     }
 
-    public function init()
+    public function transform()
     {
-
         $productsData = [];
 
         foreach ($this->products['product'] as $product) {
-            $sku = isset($product['@attributes']['number']) ? $product['@attributes']['number'] : 'sku';
-            $productName = is_string($product['name']) ? $product['name'] : 'name';
-            $productsData[$sku]['name'] = $productName;
-            $productsData[$sku]['group'] = isset($product['product-group']) ? $product['product-group'] : 'group';
+            $productTransformer = new ProductTransformer();
+            $productTransformer->validate($product);
 
-            $productColors = [];
+            $productSku = $productTransformer->getSku();
+            $productName = $productTransformer->getName();
+
+            $productsData[$productSku]['name'] = $productName;
+            $productsData[$productSku]['group'] = $productTransformer->getGroup();
+
+            $productVariantsTransformer = new ProductVariantsTransformer();
 
             foreach ($product['variants'] as $variants) {
 
                 foreach ($variants as $variant) {
-                    $color = isset($variant['color']) ? $variant['color'] : 'color';
-                    if (!in_array($color, $productColors)) {
-                        $productColors[] = $color;
-                    }
-
-                    $variantSku = isset($variant['variant-code']) ? $variant['variant-code'] : 'sku';
-                    $variantSize = isset($variant['size']) ? $variant['size'] : 'size';
+                    $productVariantsTransformer->validate($variant, $productTransformer);
 
                     $productVariants = [];
-                    $productVariants['sku'] = $variantSku;
-                    $productVariants['name'] = $productName . ' ' . $color . ' ' . $variantSize;
-                    $productVariants['size'] = $variantSize;
+                    $productVariants['sku'] = $productVariantsTransformer->getSku();
+                    $productVariants['size'] = $productVariantsTransformer->getSize();
+                    $productVariants['name'] = $productVariantsTransformer->getName();
 
-                    $productsData[$sku]['variants'][$color][] = $productVariants;
+                    $productsData[$productSku]['variants'][$productVariantsTransformer->getColor()][] = $productVariants;
                 }
 
             }
 
-            $productsData[$sku]['colors'] = $productColors;
+            $productsData[$productSku]['colors'] = $productVariantsTransformer->getColorCollection();
         }
 
         return $productsData;

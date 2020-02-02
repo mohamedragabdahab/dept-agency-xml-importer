@@ -6,24 +6,30 @@ namespace App\Import\Transformer;
 
 class ProductTransformer
 {
-    private $name;
     private $sku;
-    private $color;
+    private $name;
+    private $group;
+    private $productVariants;
 
-    public function getName(): string
+    public function validate($productData)
     {
-        return $this->name;
+        $this->sku = isset($productData['@attributes']['number']) ? $productData['@attributes']['number'] : 'sku';
+        $this->name = is_string($productData['name']) ? $productData['name'] : 'name';
+        $this->group = isset($productData['product-group']) ? $productData['product-group'] : 'group';
     }
 
-    public function getSku(): string
+    public function getSku()
     {
         return $this->sku;
     }
 
-    public function getColor(): string
+    public function getName()
     {
-        return $this->color;
+        return $this->name;
     }
 
-
+    public function getGroup()
+    {
+        return $this->group;
+    }
 }
