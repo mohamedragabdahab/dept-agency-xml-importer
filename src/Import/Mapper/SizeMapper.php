@@ -9,6 +9,12 @@ class SizeMapper
     const SIZE_LARGE = 'L';
     const SIZE_SEPARATOR = '/';
 
+    const GROUPS = [
+        '1000' => 'DE',
+        '1010' => 'US'
+    ];
+
+
     const SIZES = [
         'US' => [
             self::SIZE_SMALL => '36-38',
@@ -22,19 +28,27 @@ class SizeMapper
         ],
     ];
 
-    public function getMappedSize(string $size, $store = 'DE'): string
+    public function getMappedSize(string $size, $group): string
     {
-        $sizes = self::SIZES[$store];
+        if (!is_numeric($size)) {
+            return $size;
+        }
+
+        $sizes = self::SIZES[$this->getGroup($group)];
         $mappedSize = [];
 
         foreach ($sizes as $sizeLabel => $sizeRange) {
             list($min, $max) = explode('-', $sizeRange);
-
             if ($size >= $min && $size <= $max) {
                 $mappedSize[] = $sizeLabel;
             }
         }
 
         return implode(self::SIZE_SEPARATOR, $mappedSize);
+    }
+
+    private function getGroup(string $group): string
+    {
+        return self::GROUPS[$group];
     }
 }

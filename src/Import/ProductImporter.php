@@ -4,6 +4,7 @@ namespace App\Import;
 
 use App\Entity\Product;
 use App\Entity\ProductVariant;
+use App\Import\Mapper\SizeMapper;
 use App\Import\Transformer\Transform;
 use App\Library\ConvertXmlToJson;
 use Doctrine\ORM\EntityManagerInterface;
@@ -19,7 +20,7 @@ class ProductImporter implements ProductImporterInterface
 
     public function import(string $filePath): void
     {
-
+        $sizeMapper = new SizeMapper();
         $data = $this->buildData($filePath);
         $transform = new Transform($data);
         $data = $transform->init();
@@ -28,7 +29,7 @@ class ProductImporter implements ProductImporterInterface
             foreach ($item['colors'] as $color) {
                 $product = $this->createProduct($sku, $color, $item);
 
-                $this->createVariants($item['variants'][$color], $product);
+                $this->createVariants($item['variants'][$color], $product, $sizeMapper, $item['group']);
             }
         }
     }
@@ -42,12 +43,12 @@ class ProductImporter implements ProductImporterInterface
         return json_decode($data, true);
     }
 
-    private function createProduct($sku, $color, $i): Product
+    private function createProduct($sku, $color, $item): Product
     {
         $product = new Product();
 
         $product->setSku($sku . '-' . $color);
-        $product->setName($i['name']);
+        $product->setName($item['name']);
         $product->setColor($color);
 
         $this->manager->persist($product);
@@ -56,13 +57,13 @@ class ProductImporter implements ProductImporterInterface
         return $product;
     }
 
-    private function createVariants($variants, Product $product): void
+    private function createVariants($variants, Product $product, SizeMapper $sizeMapper, string $group): void
     {
         foreach ($variants as $variant) {
             $productVariants = new ProductVariant();
             $productVariants->setSku($product->getSku() . '-' . $variant['size']);
             $productVariants->setName($variant['name']);
-            $productVariants->setSize($variant['size']);
+            $productVariants->setSize($sizeMapper->getMappedSize($variant['size'], $group));
             $productVariants->setProduct($product);
 
             $this->manager->persist($productVariants);
