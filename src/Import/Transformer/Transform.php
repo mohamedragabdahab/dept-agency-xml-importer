@@ -2,7 +2,7 @@
 
 namespace App\Import\Transformer;
 
-class Transform implements Transferable
+class Transform implements Transformable
 {
     private $products;
     private $transformedData = [];

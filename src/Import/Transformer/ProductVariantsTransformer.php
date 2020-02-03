@@ -12,7 +12,7 @@ class ProductVariantsTransformer
 
     public function transform($variantData, ProductTransformer $product): void
     {
-        $this->sku = isset($variantData['variant-code']) ? $variantData['variant-code'] : 'sku';;
+        $this->sku = isset($variantData['variant-code']) ? $variantData['variant-code'] : 'sku';
         $this->size = isset($variantData['size']) ? $variantData['size'] : 'size';
         $this->color = isset($variantData['color']) ? $variantData['color'] : 'color';
         $this->name = sprintf('%s %s %s', $product->getName(), $this->color, $this->size);

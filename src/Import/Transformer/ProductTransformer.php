@@ -9,7 +9,6 @@ class ProductTransformer
     private $sku;
     private $name;
     private $group;
-    private $productVariants;
 
     public function transform($productData): void
     {
