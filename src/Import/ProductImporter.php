@@ -25,7 +25,7 @@ class ProductImporter implements ProductImporterInterface
         foreach ($productData as $sku => $product) {
             foreach ($product['variants'] as $color => $variants) {
 
-                $productEntity = $this->createProduct($sku, $color, $product);
+                $productEntity = $this->createProduct($sku, $product['name'], $color);
 
                 foreach ($variants['sizes'] as $size) {
                     $this->createVariants($size, $productEntity);
@@ -43,12 +43,12 @@ class ProductImporter implements ProductImporterInterface
         return json_decode($data, true);
     }
 
-    private function createProduct(string $sku, string $color, array $item): Product
+    private function createProduct(string $sku, string $name, string $color): Product
     {
         $product = new Product();
 
         $product->setSku($sku . '-' . $color);
-        $product->setName($item['name']);
+        $product->setName($name);
         $product->setColor($color);
 
         $this->manager->persist($product);
