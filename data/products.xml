@@ -102,15 +102,15 @@
                 </variant>
             </variants>
         </product>
-<!--        <product>-->
-<!--            <name/>-->
-<!--            <variants>-->
-<!--                <variant>-->
-<!--                    <variant-code>01</variant-code>-->
-<!--                    <color/>-->
-<!--                    <size>-</size>-->
-<!--                </variant>-->
-<!--            </variants>-->
-<!--        </product>-->
+        <product>
+            <name/>
+            <variants>
+                <variant>
+                    <variant-code>01</variant-code>
+                    <color/>
+                    <size>-</size>
+                </variant>
+            </variants>
+        </product>
     </products>
 </catalog>

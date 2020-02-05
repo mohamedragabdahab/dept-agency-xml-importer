@@ -12,7 +12,8 @@
         "symfony/framework-bundle": "4.2.*",
         "symfony/orm-pack": "^1.0",
         "symfony/yaml": "4.2.*",
-        "ext-json": "*"
+        "ext-json": "*",
+        "ext-libxml": "*"
     },
     "config": {
         "preferred-install": {

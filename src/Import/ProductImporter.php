@@ -4,8 +4,7 @@ namespace App\Import;
 
 use App\Entity\Product;
 use App\Entity\ProductVariant;
-use App\Import\Mapper\SizeMapper;
-use App\Import\Transformer\Transform;
+use App\Import\Transformer\Transformer;
 use App\Library\ConvertXmlToJson;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -20,16 +19,13 @@ class ProductImporter implements ProductImporterInterface
 
     public function import(string $filePath): void
     {
-        $sizeMapper = new SizeMapper();
-        $transform = new Transform($this->buildData($filePath));
-        $transform->transform();
-        $data = $transform->getTransformedData();
+        $transformer = new Transformer($this->buildData($filePath));
+        $data = $transformer->transform();
 
         foreach ($data as $sku => $item) {
-            foreach ($item['colors'] as $color) {
+            foreach ($item['variants'] as $color => $variants) {
                 $product = $this->createProduct($sku, $color, $item);
-
-                $this->createVariants($item['variants'][$color], $product, $sizeMapper, $item['group']);
+                $this->createVariants($variants['sizes'], $product);
             }
         }
     }
@@ -57,18 +53,17 @@ class ProductImporter implements ProductImporterInterface
         return $product;
     }
 
-    private function createVariants($variants, Product $product, SizeMapper $sizeMapper, string $group): void
+    private function createVariants($sizes, Product $product): void
     {
-        foreach ($variants as $variant) {
+        foreach ($sizes as $size) {
             $productVariants = new ProductVariant();
-            $productVariants->setSku($product->getSku() . '-' . $variant['size']);
-            $productVariants->setName($variant['name']);
-            $productVariants->setSize($sizeMapper->getMappedSize($variant['size'], $group));
+            $productVariants->setSku($product->getSku() . '-' . $size);
+            $productVariants->setName($product->getName() . ' ' . $product->getColor() . ' ' . $size);
+            $productVariants->setSize($size);
             $productVariants->setProduct($product);
 
             $this->manager->persist($productVariants);
             $this->manager->flush();
         }
     }
-
 }
