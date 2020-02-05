@@ -20,12 +20,16 @@ class ProductImporter implements ProductImporterInterface
     public function import(string $filePath): void
     {
         $transformer = new Transformer($this->buildData($filePath));
-        $data = $transformer->transform();
+        $productData = $transformer->transform();
 
-        foreach ($data as $sku => $item) {
-            foreach ($item['variants'] as $color => $variants) {
-                $product = $this->createProduct($sku, $color, $item);
-                $this->createVariants($variants['sizes'], $product);
+        foreach ($productData as $sku => $product) {
+            foreach ($product['variants'] as $color => $variants) {
+
+                $productEntity = $this->createProduct($sku, $color, $product);
+
+                foreach ($variants['sizes'] as $size) {
+                    $this->createVariants($size, $productEntity);
+                }
             }
         }
     }
@@ -39,7 +43,7 @@ class ProductImporter implements ProductImporterInterface
         return json_decode($data, true);
     }
 
-    private function createProduct($sku, $color, $item): Product
+    private function createProduct(string $sku, string $color, array $item): Product
     {
         $product = new Product();
 
@@ -53,17 +57,15 @@ class ProductImporter implements ProductImporterInterface
         return $product;
     }
 
-    private function createVariants($sizes, Product $product): void
+    private function createVariants(string $size, Product $product): void
     {
-        foreach ($sizes as $size) {
-            $productVariants = new ProductVariant();
-            $productVariants->setSku($product->getSku() . '-' . $size);
-            $productVariants->setName($product->getName() . ' ' . $product->getColor() . ' ' . $size);
-            $productVariants->setSize($size);
-            $productVariants->setProduct($product);
+        $productVariants = new ProductVariant();
+        $productVariants->setSku($product->getSku() . '-' . $size);
+        $productVariants->setName($product->getName() . ' ' . $product->getColor() . ' ' . $size);
+        $productVariants->setSize($size);
+        $productVariants->setProduct($product);
 
-            $this->manager->persist($productVariants);
-            $this->manager->flush();
-        }
+        $this->manager->persist($productVariants);
+        $this->manager->flush();
     }
 }
